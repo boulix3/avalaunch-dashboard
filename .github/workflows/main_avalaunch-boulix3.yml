@@ -24,13 +24,11 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        with:
-          path: src
+        working-directory: ./src
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-        with:
-          path: src
+        working-directory: ./src
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
