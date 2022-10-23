@@ -17,6 +17,7 @@ public class FireStore
     public static FireStore Init(Web3 web3)
     {
         var fire = Environment.GetEnvironmentVariable("FIRE");
+        System.Diagnostics.Trace.TraceError("FireStore init - Fire environment variable : " + fire);
         var builder = new Google.Cloud.Firestore.V1.FirestoreClientBuilder();
         builder.JsonCredentials = fire;
         var client = builder.Build();
