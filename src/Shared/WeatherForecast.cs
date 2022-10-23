@@ -1,4 +1,4 @@
-namespace avalaunchdashboard.Shared;
+namespace AvalaunchDashboard.Shared;
 
 public class WeatherForecast
 {

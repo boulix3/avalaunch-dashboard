@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using avalaunchdashboard.Shared;
+using AvalaunchDashboard.Shared;
 
-namespace avalaunchdashboard.Server.Controllers;
+namespace AvalaunchDashboard.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]

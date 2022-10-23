@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <RootNamespace>AvalaunchDashboard.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\avalaunchdashboard.Shared.csproj" />
+    <ProjectReference Include="..\Shared\AvalaunchDashboard.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

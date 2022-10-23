@@ -1,6 +1,6 @@
 {
-  "name": "avalaunchdashboard",
-  "short_name": "avalaunchdashboard",
+  "name": "AvalaunchDashboard",
+  "short_name": "AvalaunchDashboard",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

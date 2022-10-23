@@ -11,8 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\avalaunchdashboard.Client.csproj" />
-    <ProjectReference Include="..\Shared\avalaunchdashboard.Shared.csproj" />
+    <ProjectReference Include="..\Client\AvalaunchDashboard.Client.csproj" />
+    <ProjectReference Include="..\Shared\AvalaunchDashboard.Shared.csproj" />    
+    <ProjectReference Include="..\Web3\AvalaunchDashboard.Web3.csproj" />
   </ItemGroup>
 
 

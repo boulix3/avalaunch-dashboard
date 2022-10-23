@@ -1,3 +1,4 @@
+using AvalaunchDashboard.Server.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
+var web3 = Web3.Init();
+builder.Services.AddSingleton(web3);
+builder.Services.AddSingleton(FireStore.Init(web3));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
