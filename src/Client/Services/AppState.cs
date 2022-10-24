@@ -8,5 +8,6 @@ namespace AvalaunchDashboard.Client.Services
             SaleInfo = new SaleInfoState(http);
             ChildStates.Add(SaleInfo);
         }
+        public bool IsDark{get;set;}
     }
 }

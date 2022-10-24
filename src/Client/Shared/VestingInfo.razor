@@ -1,0 +1,30 @@
+<MudDialog>
+    <DialogContent>
+        @if (Data != null)
+            {
+<MudText>Vesting precision type : @Sale.VestingPortionPrecision.GetType().Name</MudText>
+                <MudTable Items="@Data" Dense="true" Hover="true" Bordered="false" Striped="true">
+                    <HeaderContent>
+                        <MudTh>Date</MudTh>
+                        <MudTh>UTC Date</MudTh>
+                        <MudTh>Percent</MudTh>
+                        <MudTh>Time remaining</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Date">@context.Date.ToLocalTime().ToString()</MudTd>
+                        <MudTd DataLabel="UtcDate">@context.Date.ToString()</MudTd>
+                        <MudTd DataLabel="Percent" Style="text-align:right">@context.Percent.ToString("N2")</MudTd>
+                        <MudTd DataLabel="Time remaining">@RemainingTime(context.Date)</MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+            }
+            else
+            {
+                <p>No vesting data</p>
+            }
+       
+    </DialogContent>
+</MudDialog>

@@ -93,7 +93,7 @@ public class Web3
             var tokenName = erc20Contract.NameQueryAsync();
             var tokenSymbol = erc20Contract.SymbolQueryAsync();
             var tokenDecimals = erc20Contract.DecimalsQueryAsync();
-            var saleInfo = new SaleInfo(saleContractAdress, await tokenName, await tokenSymbol, await tokenDecimals, saleEnd, isOldContract,
+            var saleInfo = new SaleInfo(saleContractAdress, await tokenName, await tokenSymbol, await tokenDecimals, tokenAdress, saleEnd, isOldContract,
                     vestingTimes.ToLongArray(), vestingPortions.ToLongArray(), vestingPortionPrecision.ToLong());
             return saleInfo;
         }

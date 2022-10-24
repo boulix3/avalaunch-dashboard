@@ -1,28 +1,44 @@
 @page "/sales"
+@inject IDialogService DialogService
 @using AvalaunchDashboard.Shared
 @inject AppState _state
 
 
-<MudTable Items="@Data.Items" Dense="true" Hover="true" Bordered="false" 
-        Striped="true" Filter="Filter" Loading="@Data.Loading">
+<MudTable Items="@Data.Items" Dense="true" Hover="true" Bordered="false" Striped="true" Filter="Filter"
+    Loading="@Data.Loading">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Sales</MudText>
-        <MudSpacer/>
+        <MudText Typo="Typo.h6">Sales data</MudText>
+        <MudSpacer />
         <MudButton Disabled="@Data.Loading" OnClick="RefreshData" Variant="Variant.Filled">Refresh data</MudButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Contract</MudTh>
         <MudTh>Symbol</MudTh>
         <MudTh>Token</MudTh>
         <MudTh>Date</MudTh>
+        <MudTh>Vesting info</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Address">@context.Address</MudTd>
-        <MudTd DataLabel="TokenSymbol">@context.TokenSymbol</MudTd>
+        <MudTd DataLabel="Address">
+            
+            <MudButton Color="Color.Inherit" 
+                Href="@SnowtraceContractLink(context.Address)" Target="_blank">
+@context.Address            </MudButton>
+            
+        </MudTd>
+        <MudTd DataLabel="TokenSymbol"><MudButton Color="Color.Inherit" 
+                Href="@SnowtraceContractLink(context.TokenAddress)" Target="_blank">
+@context.TokenSymbol       </MudButton></MudTd>
         <MudTd DataLabel="TokenName">@context.TokenName</MudTd>
-        <MudTd DataLabel="Time">@context.Time.ToLongDateString()</MudTd>
+        <MudTd DataLabel="Time">@context.Time.ToShortDateString()</MudTd>
+        <MudTd DataLabel="Vesting">
+            <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Info" Color="Color.Primary" OnClick="()=>ShowVestingInfo(context)">
+                @VestingInfo(context)
+            </MudButton>
+        </MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />

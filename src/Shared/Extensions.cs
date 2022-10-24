@@ -13,6 +13,10 @@ public static class Extensions
     {
         return DateTimeOffset.FromUnixTimeSeconds(item);
     }
+    public static string ToShortDateString(this long item)
+    {
+        return item.ToDateTimeOffset().Date.ToShortDateString();
+    }
     public static string ToLongDateString(this long item)
     {
         return item.ToDateTimeOffset().Date.ToLongDateString();

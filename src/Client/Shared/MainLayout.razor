@@ -1,20 +1,26 @@
 ﻿@inherits LayoutComponentBase
-
-<MudThemeProvider IsDarkMode=true/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+@inject AppState _state
+<MudThemeProvider IsDarkMode=@IsDarkMode />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        My Application
+        <MudAppBar Color="Color.Surface" Fixed="false">
+            <MudText Typo="Typo.h6">Avalaunch custom dashboard</MudText>
+            <MudSpacer />
+            <NavMenu />
+            <MudSpacer />
+            <MudToggleIconButton @bind-Toggled="@IsDarkMode" Icon="@Icons.Material.TwoTone.DarkMode" Style="@YellowFill"
+                Title="Switch to light mode" ToggledIcon="@Icons.Material.TwoTone.LightMode"
+                ToggledTitle="Switch to dark mode" />
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" 
+                Href="https://github.com/boulix3/avalaunch-dashboard/" Target="_blank" />
+        </MudAppBar>
     </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu/>
-    </MudDrawer>
     <MudMainContent>
-            <MudContainer MaxWidth="MaxWidth.Large">
-        @Body
-    </MudContainer>
+        <MudContainer MaxWidth="MaxWidth.Large">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>

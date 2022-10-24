@@ -19,24 +19,24 @@ namespace AvalaunchDashboard.Client.Services
         public async Task LoadSaleInfo()
         {
             Data = new SaleInfoStateData(new SaleInfo[] { }, true);
-            StateHasChanged();
+            StateHasChanged("Loading sale info");
             var sales = await Http.GetFromJsonAsync<SaleInfo[]>("sales");
             sales = sales ?? new SaleInfo[] { };
             Data = new SaleInfoStateData(sales, false);
-            StateHasChanged();
+            StateHasChanged("Sale info loaded");
         }
 
         public async Task RefreshData()
         {
             Data = new SaleInfoStateData(Data.Items, true);
-            StateHasChanged();
+            StateHasChanged("Deleting cached sale info");
             await Http.DeleteAsync("sales");
             Data = new SaleInfoStateData(new SaleInfo[0], true);
-            StateHasChanged();
+            StateHasChanged("Loading sale info from blockchain and caching");
             var sales = await Http.GetFromJsonAsync<SaleInfo[]>("sales/importdata");
             sales = sales ?? new SaleInfo[] { };
             Data = new SaleInfoStateData(sales, false);
-            StateHasChanged();
+            StateHasChanged("Sale info refreshed");
         }
     }
 }

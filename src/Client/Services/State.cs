@@ -9,16 +9,18 @@ public abstract class State
         Http = http;
     }
     public HttpClient Http { get; }
-    public void StateHasChanged()
+    public void StateHasChanged(string message)
     {
+        StateChangedMessage?.Invoke(message);
         StateChanged?.Invoke();
     }
+    public event Action<string>? StateChangedMessage;
     public event Action? StateChanged;
     public virtual async Task Initialize()
     {
         foreach (var state in ChildStates)
         {
-            state.StateChanged += StateHasChanged;
+            state.StateChangedMessage += StateHasChanged;
             await state.Initialize();
         }
     }
