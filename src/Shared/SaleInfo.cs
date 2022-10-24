@@ -8,10 +8,10 @@ namespace AvalaunchDashboard.Shared;
 public class SaleInfo
 {
     public SaleInfo() : this(string.Empty, string.Empty, string.Empty, 0, string.Empty,
-        0, false, new long[0], new long[0], 0)
+        0,  new long[0], new long[0], 0)
     { }
     public SaleInfo(string address, string tokenName, string tokenSymbol, int tokenDecimals, string tokenAddress,
-        long time, bool isOldContract, long[] vestingTimes, long[] vestingPortions, long vestingPortionPrecision)
+        long time,  long[] vestingTimes, long[] vestingPortions, long vestingPortionPrecision)
     {
         Address = address;
         TokenName = tokenName;
@@ -22,7 +22,6 @@ public class SaleInfo
         VestingTimes = vestingTimes;
         VestingPortions = vestingPortions;
         VestingPortionPrecision = vestingPortionPrecision;
-        IsOldContract = isOldContract;
     }
     [FirestoreProperty]
     public string Address { get; set; }
@@ -31,7 +30,7 @@ public class SaleInfo
     [FirestoreProperty]
     public string TokenSymbol { get; set; }
     [FirestoreProperty]
-        public string TokenAddress { get; set; }
+    public string TokenAddress { get; set; }
     [FirestoreProperty]
     public int TokenDecimals { get; set; }
     [FirestoreProperty]
@@ -42,7 +41,4 @@ public class SaleInfo
     public long[] VestingPortions { get; set; }
     [FirestoreProperty]
     public long VestingPortionPrecision { get; set; }
-    [FirestoreProperty]
-    public bool IsOldContract { get; set; }
-
 }

@@ -5,18 +5,18 @@ namespace AvalaunchDashboard.Client.Services
 {
     public class SaleInfoState : State
     {
-        public SaleInfoStateData Data { get; set; }
+        public SaleInfoStateData Data { get; private set; }
         public SaleInfoState(HttpClient http) : base(http)
         {
             Data = new SaleInfoStateData(new SaleInfo[] { }, false);
         }
         public override async Task Initialize()
         {
-            await LoadSaleInfo();
+            await Load();
             await base.Initialize();
         }
 
-        public async Task LoadSaleInfo()
+        public async Task Load()
         {
             Data = new SaleInfoStateData(new SaleInfo[] { }, true);
             StateHasChanged("Loading sale info");
@@ -26,7 +26,7 @@ namespace AvalaunchDashboard.Client.Services
             StateHasChanged("Sale info loaded");
         }
 
-        public async Task RefreshData()
+        public async Task Refresh()
         {
             Data = new SaleInfoStateData(Data.Items, true);
             StateHasChanged("Deleting cached sale info");

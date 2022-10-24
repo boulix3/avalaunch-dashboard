@@ -22,13 +22,14 @@ public class SalesController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task DeleteData(){
-        await _store.DeleteData();
+    public async Task DeleteData()
+    {
+        await _store.DeleteSalesData();
     }
 
     [HttpGet("importdata")]
     public async Task<IEnumerable<SaleInfo>> ImportData()
     {
-        return await _store.ImportData();
+        return await _store.ImportSalesData();
     }
 }

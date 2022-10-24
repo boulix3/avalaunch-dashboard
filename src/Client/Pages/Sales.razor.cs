@@ -32,7 +32,7 @@ namespace AvalaunchDashboard.Client.Pages
 
         async Task RefreshData()
         {
-            await _state.SaleInfo.RefreshData();
+            await _state.SaleInfo.Refresh();
         }
 
         public string VestingInfo(SaleInfo saleInfo)

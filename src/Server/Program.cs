@@ -1,4 +1,6 @@
 using AvalaunchDashboard.Server.Services;
+using AvalaunchDashboard.Web3;
+
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-var web3 = Web3.Init();
+var web3 = ContractsService.Init();
 builder.Services.AddSingleton(web3);
 builder.Services.AddSingleton(FireStore.Init(web3));
 var app = builder.Build();

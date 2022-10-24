@@ -13,22 +13,36 @@ public class UserVestingInfo
     [FirestoreProperty]
     public bool[] PortionWithdrawn { get; set; }
     [FirestoreProperty]
-    public string AmountBoughtStr
+    public string TotalTokensStr
     {
         get
         {
-            return AmountBought.ToString();
+            return TotalTokens.ToString();
         }
         set
         {
-            AmountBought = BigInteger.Parse(value);
+            TotalTokens = BigInteger.Parse(value);
         }
     }
-    public BigInteger AmountBought { get; set; }
-    public UserVestingInfo() : this(new bool[0], 0) { }
-    public UserVestingInfo(bool[] portionWithdrawn, BigInteger amountBought)
+    public BigInteger TotalTokens { get; set; }
+    [FirestoreProperty]
+    public string TotalAvaxStr
     {
-        this.AmountBought = amountBought;
+        get
+        {
+            return TotalAvax.ToString();
+        }
+        set
+        {
+            TotalAvax = BigInteger.Parse(value);
+        }
+    }
+    public BigInteger TotalAvax { get; set; }
+    public UserVestingInfo() : this(new bool[0], 0, 0) { }
+    public UserVestingInfo(bool[] portionWithdrawn, BigInteger totalTokens, BigInteger totalAvax)
+    {
+        this.TotalTokens = totalTokens;
+        this.TotalAvax = totalAvax;
         this.PortionWithdrawn = portionWithdrawn;
     }
 }

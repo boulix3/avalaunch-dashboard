@@ -1,6 +1,5 @@
 @page "/sales"
 @inject IDialogService DialogService
-@using AvalaunchDashboard.Shared
 @inject AppState _state
 
 
@@ -29,9 +28,7 @@
 @context.Address            </MudButton>
             
         </MudTd>
-        <MudTd DataLabel="TokenSymbol"><MudButton Color="Color.Inherit" 
-                Href="@SnowtraceContractLink(context.TokenAddress)" Target="_blank">
-@context.TokenSymbol       </MudButton></MudTd>
+        <MudTd DataLabel="TokenSymbol">@context.TokenSymbol</MudTd>
         <MudTd DataLabel="TokenName">@context.TokenName</MudTd>
         <MudTd DataLabel="Time">@context.Time.ToShortDateString()</MudTd>
         <MudTd DataLabel="Vesting">

@@ -10,39 +10,39 @@ using Nethereum.Contracts.CQS;
 using Nethereum.Contracts.ContractHandlers;
 using Nethereum.Contracts;
 using System.Threading;
-using Avalaunch.Sale.ContractDefinition;
+using Avalaunch.Sale1.ContractDefinition;
 
-namespace Avalaunch.Sale
+namespace Avalaunch.Sale1
 {
-    public partial class SaleService
+    public partial class Sale1Service
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, SaleDeployment saleDeployment, CancellationTokenSource cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, Sale1Deployment sale1Deployment, CancellationTokenSource cancellationTokenSource = null)
         {
-            return web3.Eth.GetContractDeploymentHandler<SaleDeployment>().SendRequestAndWaitForReceiptAsync(saleDeployment, cancellationTokenSource);
+            return web3.Eth.GetContractDeploymentHandler<Sale1Deployment>().SendRequestAndWaitForReceiptAsync(sale1Deployment, cancellationTokenSource);
         }
 
-        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, SaleDeployment saleDeployment)
+        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, Sale1Deployment sale1Deployment)
         {
-            return web3.Eth.GetContractDeploymentHandler<SaleDeployment>().SendRequestAsync(saleDeployment);
+            return web3.Eth.GetContractDeploymentHandler<Sale1Deployment>().SendRequestAsync(sale1Deployment);
         }
 
-        public static async Task<SaleService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, SaleDeployment saleDeployment, CancellationTokenSource cancellationTokenSource = null)
+        public static async Task<Sale1Service> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, Sale1Deployment sale1Deployment, CancellationTokenSource cancellationTokenSource = null)
         {
-            var receipt = await DeployContractAndWaitForReceiptAsync(web3, saleDeployment, cancellationTokenSource);
-            return new SaleService(web3, receipt.ContractAddress);
+            var receipt = await DeployContractAndWaitForReceiptAsync(web3, sale1Deployment, cancellationTokenSource);
+            return new Sale1Service(web3, receipt.ContractAddress);
         }
 
         protected Nethereum.Web3.IWeb3 Web3{ get; }
 
         public ContractHandler ContractHandler { get; }
 
-        public SaleService(Nethereum.Web3.Web3 web3, string contractAddress)
+        public Sale1Service(Nethereum.Web3.Web3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public SaleService(Nethereum.Web3.IWeb3 web3, string contractAddress)
+        public Sale1Service(Nethereum.Web3.IWeb3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);

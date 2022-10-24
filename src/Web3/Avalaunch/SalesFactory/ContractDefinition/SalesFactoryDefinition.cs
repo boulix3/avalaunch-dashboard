@@ -134,7 +134,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     [Event("AllocationStakingSet")]
     public class AllocationStakingSetEventDTOBase : IEventDTO
     {
-        [Parameter("address", "allocationStaking", 1, false )]
+        [Parameter("address", "allocationStaking", 1, false)]
         public virtual string AllocationStaking { get; set; }
     }
 
@@ -143,7 +143,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     [Event("ImplementationChanged")]
     public class ImplementationChangedEventDTOBase : IEventDTO
     {
-        [Parameter("address", "implementation", 1, false )]
+        [Parameter("address", "implementation", 1, false)]
         public virtual string Implementation { get; set; }
     }
 
@@ -152,14 +152,14 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     [Event("SaleDeployed")]
     public class SaleDeployedEventDTOBase : IEventDTO
     {
-        [Parameter("address", "saleContract", 1, false )]
+        [Parameter("address", "saleContract", 1, false)]
         public virtual string SaleContract { get; set; }
     }
 
     public partial class AdminOutputDTO : AdminOutputDTOBase { }
 
     [FunctionOutput]
-    public class AdminOutputDTOBase : IFunctionOutputDTO 
+    public class AdminOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
@@ -168,7 +168,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class AllSalesOutputDTO : AllSalesOutputDTOBase { }
 
     [FunctionOutput]
-    public class AllSalesOutputDTOBase : IFunctionOutputDTO 
+    public class AllSalesOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
@@ -177,7 +177,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class AllocationStakingOutputDTO : AllocationStakingOutputDTOBase { }
 
     [FunctionOutput]
-    public class AllocationStakingOutputDTOBase : IFunctionOutputDTO 
+    public class AllocationStakingOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
@@ -186,7 +186,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class CollateralOutputDTO : CollateralOutputDTOBase { }
 
     [FunctionOutput]
-    public class CollateralOutputDTOBase : IFunctionOutputDTO 
+    public class CollateralOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
@@ -197,7 +197,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class GetAllSalesOutputDTO : GetAllSalesOutputDTOBase { }
 
     [FunctionOutput]
-    public class GetAllSalesOutputDTOBase : IFunctionOutputDTO 
+    public class GetAllSalesOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("address[]", "", 1)]
         public virtual List<string> ReturnValue1 { get; set; }
@@ -206,7 +206,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class GetLastDeployedSaleOutputDTO : GetLastDeployedSaleOutputDTOBase { }
 
     [FunctionOutput]
-    public class GetLastDeployedSaleOutputDTOBase : IFunctionOutputDTO 
+    public class GetLastDeployedSaleOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
@@ -215,7 +215,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class GetNumberOfSalesDeployedOutputDTO : GetNumberOfSalesDeployedOutputDTOBase { }
 
     [FunctionOutput]
-    public class GetNumberOfSalesDeployedOutputDTOBase : IFunctionOutputDTO 
+    public class GetNumberOfSalesDeployedOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("uint256", "", 1)]
         public virtual BigInteger ReturnValue1 { get; set; }
@@ -224,7 +224,7 @@ namespace Avalaunch.SalesFactory.ContractDefinition
     public partial class IsSaleCreatedThroughFactoryOutputDTO : IsSaleCreatedThroughFactoryOutputDTOBase { }
 
     [FunctionOutput]
-    public class IsSaleCreatedThroughFactoryOutputDTOBase : IFunctionOutputDTO 
+    public class IsSaleCreatedThroughFactoryOutputDTOBase : IFunctionOutputDTO
     {
         [Parameter("bool", "", 1)]
         public virtual bool ReturnValue1 { get; set; }

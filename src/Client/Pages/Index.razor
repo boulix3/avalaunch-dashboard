@@ -1,3 +1,33 @@
 ﻿@page "/"
+@inject AppState _state
 
-<MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Outlined" Placeholder="0x000"></MudTextField>
+<MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Outlined" Placeholder="0x000" Disabled="Data.Loading"></MudTextField>
+<MudButton OnClick="LoadData" Disabled="Data.Loading">Load data</MudButton>
+<MudButton OnClick="RefreshData" Disabled="Data.Loading">Refresh data</MudButton>
+
+
+<MudText>Last update : @Data.Data.LastUpdated.ToLongDateString()</MudText>
+<MudText>Contracts count : @Data.Data.VestingInfo.Count</MudText>
+
+
+<MudTable Items="@Data.Data.VestingInfo" Dense="true" Hover="true" Bordered="false" Striped="true" Loading="@Data.Loading">
+    <HeaderContent>
+        <MudTh>Symbol</MudTh>
+        <MudTh>Token</MudTh>
+        <MudTh>Date</MudTh>
+        <MudTh>Vesting info</MudTh>
+    </HeaderContent>
+    <RowTemplate>        
+        <MudTd DataLabel="TokenSymbol">@context.Key</MudTd>
+        <MudTd DataLabel="totalavax">@context.Value.TotalAvax</MudTd>
+        <MudTd DataLabel="totaltoken">@context.Value.TotalTokens</MudTd>
+        <MudTd DataLabel="Claimed">
+            <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Info" Color="Color.Primary">
+                @ClaimedInfo(context)
+            </MudButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

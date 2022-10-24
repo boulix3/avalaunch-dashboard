@@ -10,39 +10,39 @@ using Nethereum.Contracts.CQS;
 using Nethereum.Contracts.ContractHandlers;
 using Nethereum.Contracts;
 using System.Threading;
-using Avalaunch.OldSale.ContractDefinition;
+using Avalaunch.Sale2.ContractDefinition;
 
-namespace Avalaunch.OldSale
+namespace Avalaunch.Sale2
 {
-    public partial class OldSaleService
+    public partial class Sale2Service
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, OldSaleDeployment oldSaleDeployment, CancellationTokenSource cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, Sale2Deployment sale2Deployment, CancellationTokenSource cancellationTokenSource = null)
         {
-            return web3.Eth.GetContractDeploymentHandler<OldSaleDeployment>().SendRequestAndWaitForReceiptAsync(oldSaleDeployment, cancellationTokenSource);
+            return web3.Eth.GetContractDeploymentHandler<Sale2Deployment>().SendRequestAndWaitForReceiptAsync(sale2Deployment, cancellationTokenSource);
         }
 
-        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, OldSaleDeployment oldSaleDeployment)
+        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, Sale2Deployment sale2Deployment)
         {
-            return web3.Eth.GetContractDeploymentHandler<OldSaleDeployment>().SendRequestAsync(oldSaleDeployment);
+            return web3.Eth.GetContractDeploymentHandler<Sale2Deployment>().SendRequestAsync(sale2Deployment);
         }
 
-        public static async Task<OldSaleService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, OldSaleDeployment oldSaleDeployment, CancellationTokenSource cancellationTokenSource = null)
+        public static async Task<Sale2Service> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, Sale2Deployment sale2Deployment, CancellationTokenSource cancellationTokenSource = null)
         {
-            var receipt = await DeployContractAndWaitForReceiptAsync(web3, oldSaleDeployment, cancellationTokenSource);
-            return new OldSaleService(web3, receipt.ContractAddress);
+            var receipt = await DeployContractAndWaitForReceiptAsync(web3, sale2Deployment, cancellationTokenSource);
+            return new Sale2Service(web3, receipt.ContractAddress);
         }
 
         protected Nethereum.Web3.IWeb3 Web3{ get; }
 
         public ContractHandler ContractHandler { get; }
 
-        public OldSaleService(Nethereum.Web3.Web3 web3, string contractAddress)
+        public Sale2Service(Nethereum.Web3.Web3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public OldSaleService(Nethereum.Web3.IWeb3 web3, string contractAddress)
+        public Sale2Service(Nethereum.Web3.IWeb3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
@@ -737,9 +737,34 @@ namespace Avalaunch.OldSale
             return ContractHandler.QueryAsync<VestingPortionsUnlockTimeFunction, BigInteger>(vestingPortionsUnlockTimeFunction, blockParameter);
         }
 
+        public Task<string> WithdrawEarningsRequestAsync(WithdrawEarningsFunction withdrawEarningsFunction)
+        {
+             return ContractHandler.SendRequestAsync(withdrawEarningsFunction);
+        }
+
+        public Task<string> WithdrawEarningsRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<WithdrawEarningsFunction>();
+        }
+
+        public Task<TransactionReceipt> WithdrawEarningsRequestAndWaitForReceiptAsync(WithdrawEarningsFunction withdrawEarningsFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawEarningsFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> WithdrawEarningsRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<WithdrawEarningsFunction>(null, cancellationToken);
+        }
+
         public Task<string> WithdrawEarningsAndLeftoverRequestAsync(WithdrawEarningsAndLeftoverFunction withdrawEarningsAndLeftoverFunction)
         {
              return ContractHandler.SendRequestAsync(withdrawEarningsAndLeftoverFunction);
+        }
+
+        public Task<string> WithdrawEarningsAndLeftoverRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<WithdrawEarningsAndLeftoverFunction>();
         }
 
         public Task<TransactionReceipt> WithdrawEarningsAndLeftoverRequestAndWaitForReceiptAsync(WithdrawEarningsAndLeftoverFunction withdrawEarningsAndLeftoverFunction, CancellationTokenSource cancellationToken = null)
@@ -747,20 +772,55 @@ namespace Avalaunch.OldSale
              return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawEarningsAndLeftoverFunction, cancellationToken);
         }
 
-        public Task<string> WithdrawEarningsAndLeftoverRequestAsync(bool withBurn)
+        public Task<TransactionReceipt> WithdrawEarningsAndLeftoverRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
-            var withdrawEarningsAndLeftoverFunction = new WithdrawEarningsAndLeftoverFunction();
-                withdrawEarningsAndLeftoverFunction.WithBurn = withBurn;
-            
-             return ContractHandler.SendRequestAsync(withdrawEarningsAndLeftoverFunction);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<WithdrawEarningsAndLeftoverFunction>(null, cancellationToken);
         }
 
-        public Task<TransactionReceipt> WithdrawEarningsAndLeftoverRequestAndWaitForReceiptAsync(bool withBurn, CancellationTokenSource cancellationToken = null)
+        public Task<string> WithdrawLeftoverRequestAsync(WithdrawLeftoverFunction withdrawLeftoverFunction)
         {
-            var withdrawEarningsAndLeftoverFunction = new WithdrawEarningsAndLeftoverFunction();
-                withdrawEarningsAndLeftoverFunction.WithBurn = withBurn;
+             return ContractHandler.SendRequestAsync(withdrawLeftoverFunction);
+        }
+
+        public Task<string> WithdrawLeftoverRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<WithdrawLeftoverFunction>();
+        }
+
+        public Task<TransactionReceipt> WithdrawLeftoverRequestAndWaitForReceiptAsync(WithdrawLeftoverFunction withdrawLeftoverFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawLeftoverFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> WithdrawLeftoverRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<WithdrawLeftoverFunction>(null, cancellationToken);
+        }
+
+        public Task<string> WithdrawMultiplePortionsRequestAsync(WithdrawMultiplePortionsFunction withdrawMultiplePortionsFunction)
+        {
+             return ContractHandler.SendRequestAsync(withdrawMultiplePortionsFunction);
+        }
+
+        public Task<TransactionReceipt> WithdrawMultiplePortionsRequestAndWaitForReceiptAsync(WithdrawMultiplePortionsFunction withdrawMultiplePortionsFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawMultiplePortionsFunction, cancellationToken);
+        }
+
+        public Task<string> WithdrawMultiplePortionsRequestAsync(List<BigInteger> portionIds)
+        {
+            var withdrawMultiplePortionsFunction = new WithdrawMultiplePortionsFunction();
+                withdrawMultiplePortionsFunction.PortionIds = portionIds;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawEarningsAndLeftoverFunction, cancellationToken);
+             return ContractHandler.SendRequestAsync(withdrawMultiplePortionsFunction);
+        }
+
+        public Task<TransactionReceipt> WithdrawMultiplePortionsRequestAndWaitForReceiptAsync(List<BigInteger> portionIds, CancellationTokenSource cancellationToken = null)
+        {
+            var withdrawMultiplePortionsFunction = new WithdrawMultiplePortionsFunction();
+                withdrawMultiplePortionsFunction.PortionIds = portionIds;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawMultiplePortionsFunction, cancellationToken);
         }
 
         public Task<string> WithdrawRegistrationFeesRequestAsync(WithdrawRegistrationFeesFunction withdrawRegistrationFeesFunction)
@@ -807,6 +867,26 @@ namespace Avalaunch.OldSale
                 withdrawTokensFunction.PortionId = portionId;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawTokensFunction, cancellationToken);
+        }
+
+        public Task<string> WithdrawUnusedFundsRequestAsync(WithdrawUnusedFundsFunction withdrawUnusedFundsFunction)
+        {
+             return ContractHandler.SendRequestAsync(withdrawUnusedFundsFunction);
+        }
+
+        public Task<string> WithdrawUnusedFundsRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<WithdrawUnusedFundsFunction>();
+        }
+
+        public Task<TransactionReceipt> WithdrawUnusedFundsRequestAndWaitForReceiptAsync(WithdrawUnusedFundsFunction withdrawUnusedFundsFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawUnusedFundsFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> WithdrawUnusedFundsRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<WithdrawUnusedFundsFunction>(null, cancellationToken);
         }
     }
 }

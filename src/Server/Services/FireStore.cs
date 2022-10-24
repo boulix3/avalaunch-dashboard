@@ -1,20 +1,21 @@
 
 using AvalaunchDashboard.Shared;
 using Google.Cloud.Firestore;
+using AvalaunchDashboard.Web3;
 
 namespace AvalaunchDashboard.Server.Services;
 public class FireStore
 {
     private FirestoreDb _db;
-    private Web3 _web3;
+    private ContractsService _web3;
 
-    private FireStore(FirestoreDb db, Web3 web3)
+    private FireStore(FirestoreDb db, ContractsService web3)
     {
         this._db = db;
         this._web3 = web3;
     }
 
-    public static FireStore Init(Web3 web3)
+    public static FireStore Init(ContractsService web3)
     {
         var fire = Environment.GetEnvironmentVariable("FIRE");
         System.Diagnostics.Trace.TraceError("FireStore init - Fire environment variable : " + fire);
@@ -25,9 +26,24 @@ public class FireStore
         return new FireStore(db, web3);
     }
 
-    public async Task<IEnumerable<SaleInfo>> ImportData()
+    internal async Task<UserData> GetUserData(string address)
     {
-        var saleInfos = await _web3.GetSalesInfos(Web3.factories);
+        var d = _db.Document($"userData/{address}");
+        var snapshot = await d.GetSnapshotAsync();
+        return snapshot.ConvertTo<UserData>();
+    }
+
+    public async Task<UserData> ImportUserData(string address)
+    {
+        var saleContracts = await GetSales();
+        var userInfo = await _web3.GetUserData(address, saleContracts);
+        var d = _db.Document($"userData/{address}");
+        await d.SetAsync(userInfo);
+        return userInfo;
+    }
+    public async Task<IEnumerable<SaleInfo>> ImportSalesData()
+    {
+        var saleInfos = await _web3.GetSalesInfos(ContractsService.factories);
         var c = _db.Collection("sales");
         foreach (var item in saleInfos)
         {
@@ -36,18 +52,24 @@ public class FireStore
         return saleInfos;
     }
 
-    public async Task DeleteData()
+    public async Task DeleteSalesData()
     {
         var c = _db.Collection("sales");
         await DeleteCollection(c, 100);
     }
 
-    internal async Task<IEnumerable<SaleInfo>> GetSales()
+    internal async Task<SaleInfo[]> GetSales()
     {
         var c = _db.Collection("sales");
         var snapshot = await c.GetSnapshotAsync();
         var data = snapshot.Documents;
-        return data.Select(x => x.ConvertTo<SaleInfo>());
+        return data.Select(x => x.ConvertTo<SaleInfo>()).ToArray();
+    }
+
+    public async Task DeleteUserData(string address)
+    {
+        var c = _db.Collection($"user{address}");
+        await DeleteCollection(c, 100);
     }
 
     private static async Task DeleteCollection(CollectionReference collectionReference, int batchSize)
@@ -66,4 +88,5 @@ public class FireStore
         }
         Console.WriteLine("Finished deleting all documents from the collection.");
     }
+
 }
