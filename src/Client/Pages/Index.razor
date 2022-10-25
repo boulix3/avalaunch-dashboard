@@ -1,33 +1,48 @@
 ﻿@page "/"
+@page "/dashboard"
+@page "/dashboard/{UrlParameterAddress}"
 @inject AppState _state
+@inject NavigationManager _navigation
 
-<MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Outlined" Placeholder="0x000" Disabled="Data.Loading"></MudTextField>
-<MudButton OnClick="LoadData" Disabled="Data.Loading">Load data</MudButton>
-<MudButton OnClick="RefreshData" Disabled="Data.Loading">Refresh data</MudButton>
+<MudCard>
+    <MudCardHeader>
+        <MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Outlined" Placeholder="0x000"
+            Disabled="Data.Loading"></MudTextField>
+        <MudButton OnClick="LoadData" Disabled="Data.Loading">Load data</MudButton>
+        <MudButton OnClick="RefreshData" Disabled="Data.Loading">Refresh data</MudButton>
+    </MudCardHeader>
+    <MudCardContent>
 
+        <MudText>Last update : @Data.Data.LastUpdated.ToLocalDateTimeString()</MudText>
+        <MudText>Total Claimable : $@DashboardData.Data.Sum(x=>x.AvailableUsdAmount).ToString("N3")
+            (@ConvertToAvax(DashboardData.Data.Sum(x=>x.AvailableUsdAmount)).ToString("N3") AVAX)</MudText>
 
-<MudText>Last update : @Data.Data.LastUpdated.ToLongDateString()</MudText>
-<MudText>Contracts count : @Data.Data.VestingInfo.Count</MudText>
-
-
-<MudTable Items="@Data.Data.VestingInfo" Dense="true" Hover="true" Bordered="false" Striped="true" Loading="@Data.Loading">
-    <HeaderContent>
-        <MudTh>Symbol</MudTh>
-        <MudTh>Token</MudTh>
-        <MudTh>Date</MudTh>
-        <MudTh>Vesting info</MudTh>
-    </HeaderContent>
-    <RowTemplate>        
-        <MudTd DataLabel="TokenSymbol">@context.Key</MudTd>
-        <MudTd DataLabel="totalavax">@context.Value.TotalAvax</MudTd>
-        <MudTd DataLabel="totaltoken">@context.Value.TotalTokens</MudTd>
-        <MudTd DataLabel="Claimed">
-            <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Info" Color="Color.Primary">
-                @ClaimedInfo(context)
-            </MudButton>
-        </MudTd>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+        <MudTable Items="@DashboardData.Data" Dense="true" Hover="true" Bordered="false" Striped="true"
+            Loading="@Data.Loading">
+            <HeaderContent>
+                <MudTh>Symbol</MudTh>
+                <MudTh>Total Amount</MudTh>
+                <MudTh>Claimed</MudTh>
+                <MudTh>Claimable</MudTh>
+                <MudTh>Locked</MudTh>
+                <MudTh>Claimable Usd</MudTh>
+                <MudTh>Claimable Avax</MudTh>
+                <MudTh>Token price</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="TokenSymbol">@GetTokenSymbol(context.SaleContractAddress)</MudTd>
+                <MudTd DataLabel="totalavax">@context.TotalTokens.ToString("N3")</MudTd>
+                <MudTd DataLabel="claimed">@context.ClaimedPercent.ToString("P2")</MudTd>
+                <MudTd DataLabel="available">@context.AvailablePercent.ToString("P2")</MudTd>
+                <MudTd DataLabel="locked">@((1 - context.AvailablePercent - context.ClaimedPercent).ToString("P2"))
+                </MudTd>
+                <MudTd DataLabel="ClaimableUsd">@context.AvailableUsdAmount.ToString("N3")</MudTd>
+                <MudTd DataLabel="ClaimableAvax">@ConvertToAvax(context.AvailableUsdAmount).ToString("N5")</MudTd>
+                <MudTd DataLabel="TokenPrice">@GetTokenPrice(context).ToString("N6")</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudCardContent>
+</MudCard>

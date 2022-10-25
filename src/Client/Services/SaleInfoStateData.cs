@@ -2,4 +2,4 @@ using AvalaunchDashboard.Shared;
 
 namespace AvalaunchDashboard.Client.Services;
 
-public record SaleInfoStateData(SaleInfo[] Items, bool Loading);
+public record SaleInfoStateData(SaleData Items, bool Loading);

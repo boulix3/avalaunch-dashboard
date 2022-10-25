@@ -9,6 +9,8 @@ namespace AvalaunchDashboard.Client.Pages
     {
         public string searchString = string.Empty;
         public SaleInfoStateData Data => _state.SaleInfo.Data;
+        public SaleInfo[] Items => Data.Items.Items.Values.ToArray();
+        
         protected override async Task OnInitializedAsync()
         {
             _state.SaleInfo.StateChanged += StateHasChanged;
@@ -51,8 +53,9 @@ namespace AvalaunchDashboard.Client.Pages
             DialogService.Show<Shared.VestingInfo>($"{saleInfo.TokenSymbol} vesting info", parameters, options);
         }
 
-        public string SnowtraceContractLink(string address){
-return $"https://snowtrace.io/address/{address}#code";
+        public string SnowtraceContractLink(string address)
+        {
+            return $"https://snowtrace.io/address/{address}#code";
         }
     }
 }

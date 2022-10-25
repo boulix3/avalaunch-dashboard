@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Numerics;
 using AvalaunchDashboard.Shared;
 
@@ -22,111 +23,141 @@ public class ContractsService
         "0xd124d278Ad66E383Dc789D593FC719f7D416D172",
         "0x29F351cdd647195553263924Cc3Abb017CB7fC7b"
     };
-    public async Task<SaleInfo[]> GetSalesInfos(string[] factoryContracts)
+    public async Task<SaleData> GetSalesData(string[] factoryContracts)
     {
-        var result = new List<SaleInfo>();
+        var tasks = new List<Task<Dictionary<string, SaleInfo>>>();
         foreach (var factoryContract in factoryContracts)
         {
-            var service = new Avalaunch.SalesFactory.SalesFactoryService(web3, factoryContract);
-            var nbSales = await service.GetNumberOfSalesDeployedQueryAsync();
-            var salesContracts = await service.GetAllSalesQueryAsync(0, nbSales);
-            foreach (var saleContract in salesContracts)
+            tasks.Add(GetSalesData(factoryContract));
+        }
+        var result = new SaleData();
+        result.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var dictionaryList = await Task.WhenAll(tasks);
+        foreach (var dictionary in dictionaryList)
+        {
+            foreach (var item in dictionary)
             {
-                try
+                if (!result.Items.ContainsKey(item.Key))
                 {
-                    var info = await GetInfo(saleContract);
-                    if (info != null)
-                    {
-                        result.Add(info);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"exception in contract {saleContract} - {e.Message}");
+                    result.Items.Add(item.Key, item.Value);
                 }
             }
         }
-        return result.OrderByDescending(x => x.Time).ToArray();
+        return result;
+    }
+    public async Task<Dictionary<string, SaleInfo>> GetSalesData(string factoryContract)
+    {
+        var tasks = new List<Task<KeyValuePair<string, SaleInfo>?>>();
+        var service = new Avalaunch.SalesFactory.SalesFactoryService(web3, factoryContract);
+        var nbSales = await service.GetNumberOfSalesDeployedQueryAsync();
+        var salesContracts = await service.GetAllSalesQueryAsync(0, nbSales);
+        foreach (var saleContract in salesContracts)
+        {
+            tasks.Add(GetSaleInfo(saleContract.ToLower()));
+        }
+        var salesInfos = await Task.WhenAll(tasks);
+        var result = salesInfos.WhereNotNull().ToDictionary(x => x.Key, y => y.Value);
+        return result;
+    }
+    public async Task<KeyValuePair<string, SaleInfo>?> GetSaleInfo(string address)
+    {
+        var info = await GetInfo(address);
+        if (info != null)
+        {
+            return new KeyValuePair<string, SaleInfo>(address, info);
+        }
+        return null;
     }
 
-    public async Task<UserData> GetUserData(string address, SaleInfo[] saleInfos)
+    public async Task<KeyValuePair<string, UserVestingInfo>?> GetUserData(string address, SaleInfo saleInfo)
     {
-        var vestingInfos = new Dictionary<string, UserVestingInfo>();
-        foreach (var saleInfo in saleInfos)
+        UserVestingInfo? vestingInfo = null;
+        try
         {
-            try
-            {
-                // extract from contract (solidity)
-                //return (
-                //     p.amountBought,
-                //     p.amountAVAXPaid,
-                //     p.timeParticipated,
-                //     p.roundId,
-                //     p.isPortionWithdrawn
-                // );
-                var contract = new Avalaunch.Sale0.Sale0Service(web3, saleInfo.Address);
-                var participation = await contract.GetParticipationQueryAsync(address);
-                var totalTokens = participation.ReturnValue1;
-                var totalAvax = participation.ReturnValue2;
-                var withdrawnPortions = participation.ReturnValue5;
-                vestingInfos.Add(saleInfo.Address,
-                    new UserVestingInfo(withdrawnPortions.ToArray(), totalTokens, totalAvax));
-            }
-            catch (Exception)
-            {
-                // try next contract type
-            }
-            try
-            {
-                // extract from contract (solidity)
-                // return (
-                //     p.amountBought,
-                //     p.amountAVAXPaid,
-                //     p.timeParticipated,
-                //     p.roundId,
-                //     p.isPortionWithdrawn,
-                //     p.isPortionWithdrawnToDexalot,
-                //     p.isParticipationBoosted,
-                //     p.boostedAmountBought,
-                //     p.boostedAmountAVAXPaid
-                // );
-                var contract = new Avalaunch.Sale1.Sale1Service(web3, saleInfo.Address);
-                var participation = await contract.GetParticipationQueryAsync(address);
-                var totalTokens = participation.ReturnValue1;
-                var totalAvax = participation.ReturnValue2;
-                var withdrawnPortions = participation.ReturnValue5;
-                var dexalotWithdrawnPortions = participation.ReturnValue6;
-                vestingInfos.Add(saleInfo.Address,
-                    new UserVestingInfo(AndArray(withdrawnPortions, dexalotWithdrawnPortions), totalTokens, totalAvax));
-            }
-            catch (Exception)
-            {
-                // try next contract type
-            }
-            try
-            {
-                // extract from contract (solidity)
-                //return (
-                //     p.amountBought,
-                //     p.amountAVAXPaid,
-                //     p.timeParticipated,
-                //     p.roundId,
-                //     p.isPortionWithdrawn
-                // );
-                var contract = new Avalaunch.Sale2.Sale2Service(web3, saleInfo.Address);
-                var participation = await contract.GetParticipationQueryAsync(address);
-                var totalTokens = participation.ReturnValue1;
-                var totalAvax = participation.ReturnValue2;
-                var withdrawnPortions = participation.ReturnValue5;
-                vestingInfos.Add(saleInfo.Address,
-                    new UserVestingInfo(withdrawnPortions.ToArray(), totalTokens, totalAvax));
-            }
-            catch (Exception)
-            {
-                // try next contract type
-            }
+            // extract from contract (solidity)
+            //return (
+            //     p.amountBought,
+            //     p.amountAVAXPaid,
+            //     p.timeParticipated,
+            //     p.roundId,
+            //     p.isPortionWithdrawn
+            // );
+            var contract = new Avalaunch.Sale0.Sale0Service(web3, saleInfo.Address);
+            var participation = await contract.GetParticipationQueryAsync(address);
+            var totalTokens = participation.ReturnValue1;
+            var totalAvax = participation.ReturnValue2;
+            var withdrawnPortions = participation.ReturnValue5;
+            vestingInfo = new UserVestingInfo(withdrawnPortions.ToArray(), totalTokens, totalAvax);
         }
-        var result = new UserData(DateTimeOffset.UtcNow.ToUnixTimeSeconds(), vestingInfos);
+        catch (Exception)
+        {
+            // try next contract type
+        }
+        try
+        {
+            // extract from contract (solidity)
+            // return (
+            //     p.amountBought,
+            //     p.amountAVAXPaid,
+            //     p.timeParticipated,
+            //     p.roundId,
+            //     p.isPortionWithdrawn,
+            //     p.isPortionWithdrawnToDexalot,
+            //     p.isParticipationBoosted,
+            //     p.boostedAmountBought,
+            //     p.boostedAmountAVAXPaid
+            // );
+            var contract = new Avalaunch.Sale1.Sale1Service(web3, saleInfo.Address);
+            var participation = await contract.GetParticipationQueryAsync(address);
+            var totalTokens = participation.ReturnValue1;
+            var totalAvax = participation.ReturnValue2;
+            var withdrawnPortions = participation.ReturnValue5;
+            var dexalotWithdrawnPortions = participation.ReturnValue6;
+            vestingInfo = new UserVestingInfo(withdrawnPortions.ToArray(), totalTokens, totalAvax);
+        }
+        catch (Exception)
+        {
+            // try next contract type
+        }
+        try
+        {
+            // extract from contract (solidity)
+            //return (
+            //     p.amountBought,
+            //     p.amountAVAXPaid,
+            //     p.timeParticipated,
+            //     p.roundId,
+            //     p.isPortionWithdrawn
+            // );
+            var contract = new Avalaunch.Sale2.Sale2Service(web3, saleInfo.Address);
+            var participation = await contract.GetParticipationQueryAsync(address);
+            var totalTokens = participation.ReturnValue1;
+            var totalAvax = participation.ReturnValue2;
+            var withdrawnPortions = participation.ReturnValue5;
+            vestingInfo = new UserVestingInfo(withdrawnPortions.ToArray(), totalTokens, totalAvax);
+        }
+        catch (Exception)
+        {
+            // try next contract type
+        }
+        if (vestingInfo != null)
+        {
+            return new KeyValuePair<string, UserVestingInfo>(saleInfo.Address, vestingInfo);
+        }
+        return null;
+    }
+    public async Task<UserData> GetUserData(string address, SaleData saleInfos)
+    {
+        var tasks = new List<Task<KeyValuePair<string, UserVestingInfo>?>>();
+        foreach (var item in saleInfos.Items.Values)
+        {
+            tasks.Add(GetUserData(address, item));
+        }
+        var vestingInfos = await Task.WhenAll(tasks);
+        var dictionary = vestingInfos.WhereNotNull()
+            .ToDictionary(x => x.Key, y => y.Value);
+        var result = new UserData(DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            dictionary);
         return result;
     }
     public bool[] AndArray(List<bool> array1, List<bool> array2)
@@ -192,22 +223,22 @@ public class ContractsService
         return null;
     }
 
-    async Task<SaleInfo?> GetInfo(string saleContractAdress, string tokenAdress, long saleEnd, IEnumerable<BigInteger> vestingTimes,
+    async Task<SaleInfo?> GetInfo(string saleContractAddress, string tokenAddress, long saleEnd, IEnumerable<BigInteger> vestingTimes,
             IEnumerable<BigInteger> vestingPortions, BigInteger vestingPortionPrecision)
     {
         try
         {
-            var erc20Contract = new Avalaunch.Erc20.Erc20Service(web3, tokenAdress);
+            var erc20Contract = new Avalaunch.Erc20.Erc20Service(web3, tokenAddress);
             var tokenName = erc20Contract.NameQueryAsync();
             var tokenSymbol = erc20Contract.SymbolQueryAsync();
             var tokenDecimals = erc20Contract.DecimalsQueryAsync();
-            var saleInfo = new SaleInfo(saleContractAdress, await tokenName, await tokenSymbol, await tokenDecimals, tokenAdress, saleEnd,
+            var saleInfo = new SaleInfo(saleContractAddress.ToLower(), await tokenName, await tokenSymbol, await tokenDecimals, tokenAddress.ToLower(), saleEnd,
                     vestingTimes.ToLongArray(), vestingPortions.ToLongArray(), vestingPortionPrecision.ToLong());
             return saleInfo;
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Error while getting erc20 contract info {tokenAdress} - {e.Message}");
+            Console.WriteLine($"Error while getting erc20 contract info {tokenAddress} - {e.Message}");
         }
         return null;
     }

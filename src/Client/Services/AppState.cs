@@ -10,7 +10,10 @@ namespace AvalaunchDashboard.Client.Services
             ChildStates.Add(SaleInfo);
             UserInfoState = new UserInfoState(http);
             ChildStates.Add(UserInfoState);
+            CoinGeckoPrices = new CoinGeckoPricesState(http,SaleInfo);
+            ChildStates.Add(CoinGeckoPrices);
         }
         public bool IsDark{get;set;}
+        public CoinGeckoPricesState CoinGeckoPrices { get; }
     }
 }

@@ -21,11 +21,6 @@ public class UserInfoController : ControllerBase
         return await _store.GetUserData(address);
     }
 
-    [HttpDelete]
-    public async Task DeleteData(){
-        await _store.DeleteSalesData();
-    }
-
     [HttpGet("importdata/{address}")]
     public async Task<UserData> ImportData(string address)
     {

@@ -24,6 +24,7 @@ public class UserVestingInfo
             TotalTokens = BigInteger.Parse(value);
         }
     }
+    [System.Text.Json.Serialization.JsonIgnore]
     public BigInteger TotalTokens { get; set; }
     [FirestoreProperty]
     public string TotalAvaxStr
@@ -37,6 +38,7 @@ public class UserVestingInfo
             TotalAvax = BigInteger.Parse(value);
         }
     }
+    [System.Text.Json.Serialization.JsonIgnore]
     public BigInteger TotalAvax { get; set; }
     public UserVestingInfo() : this(new bool[0], 0, 0) { }
     public UserVestingInfo(bool[] portionWithdrawn, BigInteger totalTokens, BigInteger totalAvax)

@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject ISnackbar _snackbar
 @inject AppState _state
 <MudThemeProvider IsDarkMode=@IsDarkMode />
 <MudDialogProvider />
@@ -6,7 +7,7 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudAppBar Color="Color.Surface" Fixed="false">
+        <MudAppBar Color="Color.Surface" Fixed="true">
             <MudText Typo="Typo.h6">Avalaunch custom dashboard</MudText>
             <MudSpacer />
             <NavMenu />
@@ -14,8 +15,15 @@
             <MudToggleIconButton @bind-Toggled="@IsDarkMode" Icon="@Icons.Material.TwoTone.DarkMode" Style="@YellowFill"
                 Title="Switch to light mode" ToggledIcon="@Icons.Material.TwoTone.LightMode"
                 ToggledTitle="Switch to dark mode" />
-            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" 
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"
                 Href="https://github.com/boulix3/avalaunch-dashboard/" Target="_blank" />
+            <MudTooltip Text="Price data provided by CoinGecko">
+                <MudIconButton Icon="@coinGeckoWhite" Color="Color.Inherit"
+                    Href="https://www.coingecko.com/en/api/documentation" Target="_blank">
+
+                </MudIconButton>
+            </MudTooltip>
+
         </MudAppBar>
     </MudAppBar>
     <MudMainContent>

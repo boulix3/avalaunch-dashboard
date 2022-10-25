@@ -30,9 +30,9 @@ public class FireStore
     {
         var d = _db.Document($"userData/{address}");
         var snapshot = await d.GetSnapshotAsync();
-        return snapshot.ConvertTo<UserData>();
+        var result = snapshot.ConvertTo<UserData>();
+        return result ?? new UserData();
     }
-
     public async Task<UserData> ImportUserData(string address)
     {
         var saleContracts = await GetSales();
@@ -41,14 +41,11 @@ public class FireStore
         await d.SetAsync(userInfo);
         return userInfo;
     }
-    public async Task<IEnumerable<SaleInfo>> ImportSalesData()
+    public async Task<SaleData> ImportSalesData()
     {
-        var saleInfos = await _web3.GetSalesInfos(ContractsService.factories);
-        var c = _db.Collection("sales");
-        foreach (var item in saleInfos)
-        {
-            await c.AddAsync(item);
-        }
+        var saleInfos = await _web3.GetSalesData(ContractsService.factories);
+        var d = _db.Document("sales/info");
+        await d.SetAsync(saleInfos);
         return saleInfos;
     }
 
@@ -58,18 +55,12 @@ public class FireStore
         await DeleteCollection(c, 100);
     }
 
-    internal async Task<SaleInfo[]> GetSales()
+    internal async Task<SaleData> GetSales()
     {
-        var c = _db.Collection("sales");
-        var snapshot = await c.GetSnapshotAsync();
-        var data = snapshot.Documents;
-        return data.Select(x => x.ConvertTo<SaleInfo>()).ToArray();
-    }
-
-    public async Task DeleteUserData(string address)
-    {
-        var c = _db.Collection($"user{address}");
-        await DeleteCollection(c, 100);
+        var d = _db.Document("sales/info");
+        var snapshot = await d.GetSnapshotAsync();
+        var result = snapshot.ConvertTo<SaleData>();
+        return result ?? new SaleData();
     }
 
     private static async Task DeleteCollection(CollectionReference collectionReference, int batchSize)

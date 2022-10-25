@@ -16,7 +16,7 @@ public class SalesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<SaleInfo>> Get()
+    public async Task<SaleData> Get()
     {
         return await _store.GetSales();
     }
@@ -28,7 +28,7 @@ public class SalesController : ControllerBase
     }
 
     [HttpGet("importdata")]
-    public async Task<IEnumerable<SaleInfo>> ImportData()
+    public async Task<SaleData> ImportData()
     {
         return await _store.ImportSalesData();
     }
