@@ -1,0 +1,12 @@
+﻿@page "/unlocks"
+@inject AppState _state
+<PageTitle>Avalaunch Unlocks</PageTitle>
+<ul>
+    @foreach (var item in Data.Items)
+    {
+        <li>
+            @item.Date.ToLocalDateTimeString() - @item.TokenSymbol - @item.Percent.ToString("P2") - @item.ItemIndex /
+            @item.TotalCount
+        </li>
+    }
+</ul>
