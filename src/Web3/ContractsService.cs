@@ -15,8 +15,8 @@ public class ContractsService
         return new ContractsService();
     }
     public static readonly string[] factories = new string[]{
-        "0x4c858df3BebBa1CDB73f49B002f095bB15Df4542",
-        "0x23a391BFc5599f8c02AE121125536E3D72D19179",
+        "0x4c858df3BebBa1CDB73f49B002f095bB15Df4542", //345
+        "0x23a391BFc5599f8c02AE121125536E3D72D19179", //421
         "0x0e5505404c0bfC6FC9F70bb1E7D015B7daAC2FC6",
         "0x86F0942d25859f0791cc3D568bA0A099bbe1Ee69",
         "0x9eB3fEF2963b359562694c391A6DAf18322FB2c6",

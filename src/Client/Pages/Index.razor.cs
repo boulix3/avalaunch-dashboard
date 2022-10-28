@@ -1,79 +1,61 @@
-using System.ComponentModel;
-using System.Linq;
-using AvalaunchDashboard.Client.Services;
+
+using AvalaunchDashboard.Client.Shared;
 using AvalaunchDashboard.Shared;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace AvalaunchDashboard.Client.Pages
 {
-    public partial class Index : ComponentBase
+    public partial class Index : CustomBaseComponent
     {
+        public bool Loading => _state.Value.Loading;
+        public Dictionary<string, SaleInfo> Sales => _saleState.Value.Sales.Items;
+        DashboardData DashboardData => new DashboardData(Sales, _state.Value.Data.Items, _pricesState.Value.Prices);
 
-
-        public UserInfoStateData Data => _state.UserInfoState.UserData;
-        public Dictionary<string, SaleInfo> Sales => _state.SaleInfo.Data.Items.Items;
-        DashboardData DashboardData { get; set; } = new DashboardData();
-        private string? urlParameterAddress;
-        [Parameter]
-        public string UrlParameterAddress
+        protected override void OnParametersSet()
         {
-            get
+            Console.WriteLine("OnParameterSet " + AddressParameter);
+            if (AddressParameter != null)
             {
-                return urlParameterAddress ?? string.Empty;
+                Address = AddressParameter;
             }
-            set
-            {
-                urlParameterAddress = value;
-                address = value;
-            }
+            base.OnParametersSet();
         }
-        private string? address;
+        [Parameter]
+        public string? AddressParameter { get; set; }
         public string Address
         {
             get
             {
-                return address ?? string.Empty;
+                return _state.Value.WalletAddress;
             }
             set
             {
-                address = value;
-                if (value.IsValidAddress() && !value.Equals(UrlParameterAddress))
-                {
-                    _navigation.NavigateTo($"/dashboard/{value}");
-                }
+                _dispatcher.Dispatch(new Flux.User.Actions.ChangeWalletAddress(value));
             }
         }
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override void OnInitialized()
         {
-            Console.WriteLine("OnAfterRender");
-            if (!Data.Loading && Address.IsValidAddress() && Data.Address != Address)
+            if (Address.IsValidAddress() && AddressParameter == null)
             {
-                Console.WriteLine("OnAfterRender LoadData");
-                await LoadData();
+                _dispatcher.Dispatch(Flux.User.Actions.Navigator.Wallet(Address));
             }
-            await base.OnAfterRenderAsync(firstRender);
+            base.OnInitialized();
         }
-        public async Task LoadData()
+        public void LoadData()
         {
-            await _state.UserInfoState.Load(Address);
+            if (Address?.IsValidAddress() ?? false)
+            {
+                _dispatcher.Dispatch(new Flux.User.Actions.Load());
+            }
         }
-        public async Task RefreshData()
+        public void RefreshData()
         {
-            await _state.UserInfoState.Refresh(Address);
-        }
-        protected override async Task OnInitializedAsync()
-        {
-            _state.StateChanged += BeforeStateHasChanged;
-            await base.OnInitializedAsync();
+            if (Address?.IsValidAddress() ?? false)
+            {
+                _dispatcher.Dispatch(new Flux.User.Actions.Refresh());
+            }
         }
 
-        public void BeforeStateHasChanged()
-        {
-            Console.WriteLine($"update dashboard data - prices : {_state.CoinGeckoPrices.Data.Count}", _state.CoinGeckoPrices.Data);
-            DashboardData = new DashboardData(Sales, Data.Data.Items, _state.CoinGeckoPrices.Data);
-            StateHasChanged();
-        }
         public string GetTokenSymbol(string key)
         {
             var saleInfo = Sales[key];
@@ -81,7 +63,7 @@ namespace AvalaunchDashboard.Client.Pages
         }
         public decimal ConvertToAvax(decimal usdAmount)
         {
-            var avaxPrice = _state.CoinGeckoPrices.GetAvaxPrice();
+            var avaxPrice = _pricesState.Value.GetAvaxPrice();
             if (avaxPrice == 0)
             {
                 return 0;
@@ -89,11 +71,13 @@ namespace AvalaunchDashboard.Client.Pages
             return usdAmount / avaxPrice;
         }
 
-        public decimal GetTokenPrice(DashboardDataItem userInfo){
+        public decimal GetTokenPrice(DashboardDataItem userInfo)
+        {
             var saleInfo = Sales[userInfo.SaleContractAddress];
             var tokenAddress = saleInfo.TokenAddress.ToLower();
-            var prices = _state.CoinGeckoPrices.Data;
-            if(prices.ContainsKey(tokenAddress)){
+            var prices = _pricesState.Value.Prices;
+            if (prices.ContainsKey(tokenAddress))
+            {
                 return prices[tokenAddress];
             }
             return 0;

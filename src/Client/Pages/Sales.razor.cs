@@ -1,4 +1,5 @@
-using AvalaunchDashboard.Client.Services;
+
+using AvalaunchDashboard.Client.Shared;
 using AvalaunchDashboard.Shared;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
@@ -6,7 +7,7 @@ using MudBlazor;
 
 namespace AvalaunchDashboard.Client.Pages
 {
-    public partial class Sales : Fluxor.Blazor.Web.Components.FluxorComponent
+    public partial class Sales : CustomBaseComponent
     {
         public string searchString = string.Empty;
         public SaleInfo[] Items => _state.Value.Sales.Items.Values.ToArray();

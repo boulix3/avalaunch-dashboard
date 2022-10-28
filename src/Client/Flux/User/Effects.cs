@@ -10,26 +10,28 @@ public class Effects : HttpEffect<State>
     {
     }
 
-
     [EffectMethod]
-    public void WalletChange(Actions.TryChangeWalletAddress action, IDispatcher dispatcher)
+    public async Task WalletChanged(Actions.ChangeWalletAddress action, IDispatcher dispatcher)
     {
-        if (action.WalletAddress.IsValidAddress())
+        await Task.CompletedTask;
+        if (action.WalletAddress.IsValidAddress() &&
+            (!_state.Value.Data.Items.Any() ||
+                action.WalletAddress != _state.Value.WalletAddress))
         {
-            dispatcher.Dispatch(new Actions.ChangeWalletAddress(action.WalletAddress));
+            dispatcher.Dispatch(Flux.User.Actions.Navigator.Wallet(action.WalletAddress));
+            dispatcher.Dispatch(new Actions.Load());
         }
-    }
-
-    [EffectMethod]
-    public void WalletChanged(Actions.ChangeWalletAddress action, IDispatcher dispatcher)
-    {
-        dispatcher.Dispatch(new Actions.Load());
     }
 
     [EffectMethod]
     public async Task Load(Actions.Load _, IDispatcher dispatcher)
     {
         var address = _state.Value.WalletAddress;
+        if (!address.IsValidAddress())
+        {
+            dispatcher.Dispatch(new Notifications.Actions.Warn("Invalid wallet address"));
+            return;
+        }
         var userData = await _http.GetFromJsonAsync<UserData>($"userinfo/{address}");
         userData = userData ?? new();
         dispatcher.Dispatch(new Actions.DataLoaded(userData));
@@ -39,6 +41,11 @@ public class Effects : HttpEffect<State>
     public async Task Refresh(Actions.Refresh _, IDispatcher dispatcher)
     {
         var address = _state.Value.WalletAddress;
+        if (!address.IsValidAddress())
+        {
+            dispatcher.Dispatch(new Notifications.Actions.Warn("Invalid wallet address"));
+            return;
+        }
         var userData = await _http.GetFromJsonAsync<UserData>($"userinfo/importdata/{address}");
         userData = userData ?? new();
         dispatcher.Dispatch(new Actions.DataLoaded(userData));

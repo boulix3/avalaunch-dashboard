@@ -1,6 +1,6 @@
 using AvalaunchDashboard.Shared;
 
-namespace AvalaunchDashboard.Client.Services;
+namespace AvalaunchDashboard.Client.Pages;
 public record DashboardDataItem(
     string SaleContractAddress,
     decimal TotalTokens,

@@ -1,6 +1,6 @@
 using AvalaunchDashboard.Shared;
 
-namespace AvalaunchDashboard.Client.Services;
+namespace AvalaunchDashboard.Client.Pages;
 public class DashboardData
 {
     public DashboardDataItem[] Data { get; set; }
@@ -12,9 +12,12 @@ public class DashboardData
         List<DashboardDataItem> data = new();
         foreach (var key in userInfos.Keys)
         {
-            var saleInfo = saleInfos[key];
-            var price = prices.ContainsKey(saleInfo.TokenAddress) ? prices[saleInfo.TokenAddress] : 0;
-            data.Add(CreateItem(saleInfo, userInfos[key], price));
+            if (saleInfos.ContainsKey(key))
+            {
+                var saleInfo = saleInfos[key];
+                var price = prices.ContainsKey(saleInfo.TokenAddress) ? prices[saleInfo.TokenAddress] : 0;
+                data.Add(CreateItem(saleInfo, userInfos[key], price));
+            }
         }
         Data = data.OrderByDescending(x => x.AvailablePercent).OrderByDescending(x => x.AvailableUsdAmount).ToArray();
     }

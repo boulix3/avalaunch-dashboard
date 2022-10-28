@@ -1,7 +1,7 @@
 using System.Linq;
 using AvalaunchDashboard.Shared;
 
-namespace AvalaunchDashboard.Client.Services;
+namespace AvalaunchDashboard.Client.Pages;
 public class UnlockData
 {
     public UnlockDataItem[] Items { get; }

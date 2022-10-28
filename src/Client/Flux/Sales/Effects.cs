@@ -25,4 +25,10 @@ public class Effects : HttpEffect<State>
         sales = sales ?? new();
         dispatcher.Dispatch(new Actions.DataLoaded(sales));
     }
+    [EffectMethod]
+    public async Task DataLoaded(Actions.DataLoaded action, IDispatcher dispatcher)
+    {
+        dispatcher.Dispatch(new Notifications.Actions.Notify("Sales data loaded"));
+        await Task.CompletedTask;
+    }
 }
