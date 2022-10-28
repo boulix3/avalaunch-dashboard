@@ -29,7 +29,7 @@ public class Effects
     public async Task Show(string message, MudBlazor.Severity severity)
     {
         message = $"{DateTime.Now:T} - {message}";
-        _snackbar.Add(message, MudBlazor.Severity.Warning);
+        _snackbar.Add(message, severity);
         await Task.CompletedTask;
     }
 }

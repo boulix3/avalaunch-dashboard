@@ -43,17 +43,11 @@ namespace AvalaunchDashboard.Client.Pages
         }
         public void LoadData()
         {
-            if (Address?.IsValidAddress() ?? false)
-            {
-                _dispatcher.Dispatch(new Flux.User.Actions.Load());
-            }
+            _dispatcher.Dispatch(new Flux.User.Actions.Load());
         }
         public void RefreshData()
         {
-            if (Address?.IsValidAddress() ?? false)
-            {
-                _dispatcher.Dispatch(new Flux.User.Actions.Refresh());
-            }
+            _dispatcher.Dispatch(new Flux.User.Actions.Refresh());
         }
 
         public string GetTokenSymbol(string key)
