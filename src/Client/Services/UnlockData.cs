@@ -14,7 +14,7 @@ public class UnlockData
             var totalCount = item.Value.VestingTimes.Length;
             for (int i = 0; i < totalCount; i++)
             {
-                var date = item.Value.VestingTimes[i];
+                var date = item.Value.VestingTimes[i].ToDateTimeOffset().LocalDateTime;
                 var percent = (decimal)item.Value.VestingPortions[i] / item.Value.VestingPortionPrecision;
                 data.Add(new UnlockDataItem(date, item.Value.TokenAddress, item.Value.TokenSymbol, item.Value.Address, percent, i, totalCount));
             }
@@ -23,4 +23,4 @@ public class UnlockData
     }
 }
 
-public record UnlockDataItem(long Date, string TokenAddress, string TokenSymbol, string SaleAddress, decimal Percent, int ItemIndex, int TotalCount);
+public record UnlockDataItem(DateTime Date, string TokenAddress, string TokenSymbol, string SaleAddress, decimal Percent, int ItemIndex, int TotalCount);

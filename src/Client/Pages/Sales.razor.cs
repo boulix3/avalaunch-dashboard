@@ -1,28 +1,16 @@
 using AvalaunchDashboard.Client.Services;
 using AvalaunchDashboard.Shared;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace AvalaunchDashboard.Client.Pages
 {
-    public partial class Sales : ComponentBase
+    public partial class Sales : Fluxor.Blazor.Web.Components.FluxorComponent
     {
         public string searchString = string.Empty;
-        public SaleInfoStateData Data => _state.SaleInfo.Data;
-        public SaleInfo[] Items => Data.Items.Items.Values.ToArray();
-        
-        protected override async Task OnInitializedAsync()
-        {
-            _state.SaleInfo.StateChanged += StateHasChanged;
-            // if (!Data.Loading && !Data.Items.Any())
-            // {
-            //     await _state.SaleInfo.LoadSaleInfo();
-            // }
-            await base.OnInitializedAsync();
-        }
-
+        public SaleInfo[] Items => _state.Value.Sales.Items.Values.ToArray();
         private bool Filter(SaleInfo element) => FilterFunc(element, searchString);
-
         private bool FilterFunc(SaleInfo element, string searchString)
         {
             return
@@ -32,9 +20,10 @@ namespace AvalaunchDashboard.Client.Pages
                 || element.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase);
         }
 
-        async Task RefreshData()
+        public void RefreshData()
         {
-            await _state.SaleInfo.Refresh();
+
+            _dispatcher.Dispatch(new Flux.Sales.Actions.Refresh());
         }
 
         public string VestingInfo(SaleInfo saleInfo)
@@ -56,6 +45,14 @@ namespace AvalaunchDashboard.Client.Pages
         public string SnowtraceContractLink(string address)
         {
             return $"https://snowtrace.io/address/{address}#code";
+        }
+
+        public string GetTokenPrice(string tokenAddress)
+        {
+            var price = _pricesState.Value.Prices.ContainsKey(tokenAddress) ?
+                _pricesState.Value.Prices[tokenAddress] :
+                0;
+            return "$" + price.ToString("N5");
         }
     }
 }
