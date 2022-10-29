@@ -40,13 +40,16 @@ public class DashboardData
                 AvailablePercent += portion;
             }
         }
+        var lockedPercent = saleInfo.VestingPortionPrecision - AvailablePercent - ClaimedPercent;
         var totalTokens = Nethereum.Util.UnitConversion.Convert.FromWei(userVestingInfo.TotalTokens, saleInfo.TokenDecimals);
         var availableUsdAmount = totalTokens * AvailablePercent / saleInfo.VestingPortionPrecision * price;
+        var lockedUsdAmount = totalTokens * lockedPercent / saleInfo.VestingPortionPrecision * price;
         return new DashboardDataItem(
             saleInfo.Address,
             totalTokens,
             (decimal)ClaimedPercent / saleInfo.VestingPortionPrecision,
             (decimal)AvailablePercent / saleInfo.VestingPortionPrecision,
-            availableUsdAmount);
+            availableUsdAmount,
+            lockedUsdAmount);
     }
 }

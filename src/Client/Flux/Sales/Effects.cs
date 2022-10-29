@@ -23,6 +23,8 @@ public class Effects : HttpEffect<State>
     {
         var sales = await _http.GetFromJsonAsync<SaleData>("sales");
         sales = sales ?? new();
+        sales.Items = sales.Items.OrderByDescending(x => x.Value.Time)
+            .ToDictionary(x => x.Key, y => y.Value);
         dispatcher.Dispatch(new Actions.DataLoaded(sales));
     }
     [EffectMethod]

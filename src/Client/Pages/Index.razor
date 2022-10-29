@@ -26,16 +26,41 @@
             <MudText>Last update : @_state.Value.Data.LastUpdated.ToLocalDateTimeString()</MudText>
             <MudText>Total Claimable : $@DashboardData.Data.Sum(x=>x.AvailableUsdAmount).ToString("N3")
                 (@ConvertToAvax(DashboardData.Data.Sum(x=>x.AvailableUsdAmount)).ToString("N3") AVAX)</MudText>
+            <MudText>Total Locked : $@DashboardData.Data.Sum(x=>x.LockedUsdAmount).ToString("N3")
+                (@ConvertToAvax(DashboardData.Data.Sum(x=>x.LockedUsdAmount)).ToString("N3") AVAX)</MudText>
             <MudTable Items="@DashboardData.Data" Dense="true" Hover="true" Bordered="false" Striped="true"
             Loading="@Loading">
                 <HeaderContent>
                     <MudTh>Symbol</MudTh>
-                    <MudTh>Total Amount</MudTh>
-                    <MudTh>Claimed</MudTh>
-                    <MudTh>Claimable</MudTh>
-                    <MudTh>Locked</MudTh>
-                    <MudTh>Claimable Usd</MudTh>
-                    <MudTh>Claimable Avax</MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<DashboardDataItem, object>(x=>x.TotalTokens)">Total Amount
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<DashboardDataItem, object>(x=>x.ClaimedPercent)">Claimed
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<DashboardDataItem, object>(x=>x.AvailablePercent)">Claimable
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<DashboardDataItem, object>(x=>x.LockedUsdAmount)">Locked
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel InitialDirection="SortDirection.Descending"
+                        SortBy="new Func<DashboardDataItem, object>(x=>x.AvailablePercent)">Claimable Usd
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<DashboardDataItem, object>(x=>x.AvailablePercent)">Claimable
+                            Avax</MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<DashboardDataItem, object>(x=>x.LockedUsdAmount)">Locked Usd
+                        </MudTableSortLabel>
+                    </MudTh>
                     <MudTh>Token price</MudTh>
                 </HeaderContent>
                 <RowTemplate>
@@ -49,6 +74,7 @@
                     </MudTd>
                     <MudTd Style="text-align:right" DataLabel="ClaimableAvax">
                         @ConvertToAvax(context.AvailableUsdAmount).ToString("N5")</MudTd>
+                    <MudTd Style="text-align:right" DataLabel="LockedUsd">@context.LockedUsdAmount.ToString("N3") </MudTd>
                     <MudTd Style="text-align:right" DataLabel="TokenPrice">$@GetTokenPrice(context).ToString("N6")</MudTd>
                 </RowTemplate>
                 <PagerContent>

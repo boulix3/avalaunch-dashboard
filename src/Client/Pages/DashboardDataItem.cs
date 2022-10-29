@@ -6,4 +6,5 @@ public record DashboardDataItem(
     decimal TotalTokens,
     decimal ClaimedPercent,
     decimal AvailablePercent,
-    decimal AvailableUsdAmount);
+    decimal AvailableUsdAmount,
+    decimal LockedUsdAmount);
