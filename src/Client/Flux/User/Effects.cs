@@ -38,6 +38,10 @@ public class Effects : HttpEffect<State>
             (DateTimeOffset.UtcNow - userData.LastUpdated.ToDateTimeOffset()).TotalDays;
         if (elapsedDays > 1)
         {
+            dispatcher.Dispatch(new Actions.Refresh());
+        }
+        else
+        {
             dispatcher.Dispatch(new Actions.DataLoaded(userData));
         }
     }
