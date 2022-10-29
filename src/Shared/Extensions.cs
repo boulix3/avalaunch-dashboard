@@ -36,7 +36,9 @@ public static class Extensions
 
     public static bool IsValidAddress(this string address)
     {
-        return address.StartsWith("0x") && address.Length == 42;
+        var result = Nethereum.Util.AddressUtil.Current.IsValidEthereumAddressHexFormat(address);
+        Console.WriteLine("IsValidAddress + " + address + " - " + result);
+        return result;
     }
 
     public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> items) where T : struct
@@ -45,5 +47,14 @@ public static class Extensions
                 .Where(x => x.HasValue)
                 .Select(x => x!.Value);
         return nonNulls;
+    }
+
+    public static string ToShortAddress(this string address)
+    {
+        if (address.Length > 8)
+        {
+            address = address.Substring(0, 5) + ".." + address.Substring(address.Length - 3);
+        }
+        return address;
     }
 }

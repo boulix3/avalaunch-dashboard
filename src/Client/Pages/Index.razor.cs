@@ -33,6 +33,14 @@ namespace AvalaunchDashboard.Client.Pages
                 _dispatcher.Dispatch(new Flux.User.Actions.ChangeWalletAddress(value));
             }
         }
+
+        public string ValidateAddress(string item)
+        {
+            if (IsNotValidAddress)
+                return "Please enter a valid c-chain address";
+            return string.Empty;
+        }
+        public bool IsNotValidAddress => !Address.IsValidAddress();
         protected override void OnInitialized()
         {
             if (Address.IsValidAddress() && AddressParameter == null)

@@ -1,19 +1,11 @@
+using Microsoft.AspNetCore.Components;
+
 namespace AvalaunchDashboard.Client.Shared;
 public partial class AppBar
 {
     public string YellowFill = $"color:{MudBlazor.Colors.Yellow.Lighten1};";
     public bool IsDarkMode { get; set; }
-    public string Address
-    {
-        get
-        {
-            return _state.Value.WalletAddress;
-        }
-        set
-        {
-            _dispatcher.Dispatch(new Flux.User.Actions.ChangeWalletAddress(value));
-        }
-    }
+
     public const string coinGeckoWhite = """
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 683.1 680.74" style="enable-background:new 0 0 683.1 680.74;" xml:space="preserve">

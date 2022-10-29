@@ -3,21 +3,22 @@
 @inject IState<Flux.User.State> _state
 <MudThemeProvider IsDarkMode=@IsDarkMode />
 <MudAppBar Color="Color.Surface" Fixed="true" Elevation=1>
-    <MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Outlined" Margin="Margin.Dense"
-        Disabled="_state.Value.Loading" Style="width=400px;background:white;border-radius:5px"></MudTextField>
-    <MudSpacer />
+    @* <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+        OnClick="@((e) => ToggleDrawer?.Invoke())" /> *@
+    @**@
+    @* <MudSpacer /> *@
     <NavMenu />
     <MudSpacer />
     <MudToggleIconButton @bind-Toggled="@IsDarkMode" Icon="@Icons.Material.TwoTone.DarkMode" Style="@YellowFill"
         Title="Switch to light mode" ToggledIcon="@Icons.Material.TwoTone.LightMode"
         ToggledTitle="Switch to dark mode" />
-    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"
-        Href="https://github.com/boulix3/avalaunch-dashboard/" Target="_blank" />
-    <MudTooltip Text="Price data provided by CoinGecko">
-        <MudIconButton Icon="@coinGeckoWhite" Color="Color.Inherit"
-            Href="https://www.coingecko.com/en/api/documentation" Target="_blank">
-
-        </MudIconButton>
-    </MudTooltip>
-
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"
+            Href="https://github.com/boulix3/avalaunch-dashboard/" Target="_blank" />
+        <MudTooltip Text="Price data provided by CoinGecko">
+            <MudIconButton Icon="@coinGeckoWhite" Color="Color.Inherit"
+                Href="https://www.coingecko.com/en/api/documentation" Target="_blank">
+            </MudIconButton>
+        </MudTooltip>
+    </MudHidden>
 </MudAppBar>

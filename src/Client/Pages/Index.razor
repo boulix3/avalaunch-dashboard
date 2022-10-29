@@ -10,47 +10,51 @@
 <PageTitle>Avalaunch Dashboard</PageTitle>
 <MudCard>
     <MudCardHeader>
-        @if (string.IsNullOrWhiteSpace(Address))
-        {
-            <MudText Typo="Typo.caption" Color="Color.Warning">Please enter a wallet address on the top bar</MudText>
-        }
-        <MudButton OnClick="LoadData" Disabled="Loading">Load data</MudButton>
-        <MudButton OnClick="RefreshData" Disabled="Loading">Refresh data</MudButton>
+        <MudTextField @bind-Value="Address" Immediate=true Label="Address" Variant="Variant.Outlined"
+            Disabled="_state.Value.Loading" Counter="42" HelperText="C-chain wallet address">
+        </MudTextField>
+        <MudButton OnClick="LoadData" Disabled="Loading">Load</MudButton>
+        <MudButton OnClick="RefreshData" Disabled="Loading">Refresh</MudButton>
     </MudCardHeader>
     <MudCardContent>
-
-        <MudText>Last update : @_state.Value.Data.LastUpdated.ToLocalDateTimeString()</MudText>
-        <MudText>Total Claimable : $@DashboardData.Data.Sum(x=>x.AvailableUsdAmount).ToString("N3")
-            (@ConvertToAvax(DashboardData.Data.Sum(x=>x.AvailableUsdAmount)).ToString("N3") AVAX)</MudText>
-
-        <MudTable Items="@DashboardData.Data" Dense="true" Hover="true" Bordered="false" Striped="true"
+        @if (IsNotValidAddress)
+        {
+            <MudText Color=Color.Warning>Enter a valid c-chain address</MudText>
+        }
+        else
+        {
+            <MudText>Last update : @_state.Value.Data.LastUpdated.ToLocalDateTimeString()</MudText>
+            <MudText>Total Claimable : $@DashboardData.Data.Sum(x=>x.AvailableUsdAmount).ToString("N3")
+                (@ConvertToAvax(DashboardData.Data.Sum(x=>x.AvailableUsdAmount)).ToString("N3") AVAX)</MudText>
+            <MudTable Items="@DashboardData.Data" Dense="true" Hover="true" Bordered="false" Striped="true"
             Loading="@Loading">
-            <HeaderContent>
-                <MudTh>Symbol</MudTh>
-                <MudTh>Total Amount</MudTh>
-                <MudTh>Claimed</MudTh>
-                <MudTh>Claimable</MudTh>
-                <MudTh>Locked</MudTh>
-                <MudTh>Claimable Usd</MudTh>
-                <MudTh>Claimable Avax</MudTh>
-                <MudTh>Token price</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="TokenSymbol">@GetTokenSymbol(context.SaleContractAddress)</MudTd>
-                <MudTd Style="text-align:right" DataLabel="totalavax">@context.TotalTokens.ToString("N")</MudTd>
-                <MudTd Style="text-align:right" DataLabel="claimed">@context.ClaimedPercent.ToString("P2")</MudTd>
-                <MudTd Style="text-align:right" DataLabel="available">@context.AvailablePercent.ToString("P2")</MudTd>
-                <MudTd Style="text-align:right" DataLabel="locked">@((1 - context.AvailablePercent -
+                <HeaderContent>
+                    <MudTh>Symbol</MudTh>
+                    <MudTh>Total Amount</MudTh>
+                    <MudTh>Claimed</MudTh>
+                    <MudTh>Claimable</MudTh>
+                    <MudTh>Locked</MudTh>
+                    <MudTh>Claimable Usd</MudTh>
+                    <MudTh>Claimable Avax</MudTh>
+                    <MudTh>Token price</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="TokenSymbol">@GetTokenSymbol(context.SaleContractAddress)</MudTd>
+                    <MudTd Style="text-align:right" DataLabel="totalavax">@context.TotalTokens.ToString("N")</MudTd>
+                    <MudTd Style="text-align:right" DataLabel="claimed">@context.ClaimedPercent.ToString("P2")</MudTd>
+                    <MudTd Style="text-align:right" DataLabel="available">@context.AvailablePercent.ToString("P2")</MudTd>
+                    <MudTd Style="text-align:right" DataLabel="locked">@((1 - context.AvailablePercent -
                     context.ClaimedPercent).ToString("P2"))</MudTd>
-                <MudTd Style="text-align:right" DataLabel="ClaimableUsd">@context.AvailableUsdAmount.ToString("N3")
-                </MudTd>
-                <MudTd Style="text-align:right" DataLabel="ClaimableAvax">
-                    @ConvertToAvax(context.AvailableUsdAmount).ToString("N5")</MudTd>
-                <MudTd Style="text-align:right" DataLabel="TokenPrice">$@GetTokenPrice(context).ToString("N6")</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
+                    <MudTd Style="text-align:right" DataLabel="ClaimableUsd">@context.AvailableUsdAmount.ToString("N3")
+                    </MudTd>
+                    <MudTd Style="text-align:right" DataLabel="ClaimableAvax">
+                        @ConvertToAvax(context.AvailableUsdAmount).ToString("N5")</MudTd>
+                    <MudTd Style="text-align:right" DataLabel="TokenPrice">$@GetTokenPrice(context).ToString("N6")</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        }
     </MudCardContent>
 </MudCard>
