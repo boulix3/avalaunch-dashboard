@@ -34,7 +34,12 @@ public class Effects : HttpEffect<State>
         }
         var userData = await _http.GetFromJsonAsync<UserData>($"userinfo/{address}");
         userData = userData ?? new();
-        dispatcher.Dispatch(new Actions.DataLoaded(userData));
+        var elapsedDays =
+            (DateTimeOffset.UtcNow - userData.LastUpdated.ToDateTimeOffset()).TotalDays;
+        if (elapsedDays > 1)
+        {
+            dispatcher.Dispatch(new Actions.DataLoaded(userData));
+        }
     }
 
     [EffectMethod]
