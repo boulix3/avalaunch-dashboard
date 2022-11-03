@@ -1,5 +1,7 @@
 # Avalaunch Dashboard
 
+Available on https://avalaunch-boulix3.azurewebsites.net/ (see [action](https://github.com/boulix3/avalaunch-dashboard/actions/workflows/main_avalaunch-boulix3.yml))
+
 This is an experimental dashboard to present [Avalaunch](https://avalaunch.app/) sales data in an original way.
 
 Tech stack :
