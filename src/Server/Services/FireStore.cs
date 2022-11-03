@@ -1,7 +1,7 @@
 
 using AvalaunchDashboard.Shared;
-using Google.Cloud.Firestore;
 using AvalaunchDashboard.Web3;
+using Google.Cloud.Firestore;
 
 namespace AvalaunchDashboard.Server.Services;
 public class FireStore
@@ -25,7 +25,19 @@ public class FireStore
         var db = FirestoreDb.Create("avalaunch-dashboard", client);
         return new FireStore(db, web3);
     }
-
+    internal async Task<Dictionary<string, UserData>> UserHistory()
+    {
+        var result = new Dictionary<string, UserData>();
+        var c = _db.Collection("userData");
+        var docs = c.ListDocumentsAsync();
+        await foreach (var item in docs)
+        {
+            var snapshot = await item.GetSnapshotAsync();
+            var userData = snapshot.ConvertTo<UserData>();
+            result.Add(item.Id, userData);
+        }
+        return result;
+    }
     internal async Task<UserData> GetUserData(string address)
     {
         var d = _db.Document($"userData/{address}");
@@ -62,6 +74,7 @@ public class FireStore
         var result = snapshot.ConvertTo<SaleData>();
         return result ?? new SaleData();
     }
+
 
     private static async Task DeleteCollection(CollectionReference collectionReference, int batchSize)
     {

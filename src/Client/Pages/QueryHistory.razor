@@ -1,0 +1,9 @@
+@inherits CustomBaseComponent
+@page "/history"
+@inject IDispatcher _dispatcher
+@inject IState<Flux.QueryHistory.State> _state
+<MudText>@_state.Value.Data.Count history items</MudText>
+@foreach (var item in _state.Value.Data.OrderBy(x => x.Value.LastUpdated))
+{
+    <MudNavLink Href=@("/dashboard/" +item.Key)>@item.Key - @item.Value.LastUpdated.ToLocalDateTimeString()</MudNavLink>
+}
