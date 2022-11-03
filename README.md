@@ -1,10 +1,9 @@
 # Avalaunch Dashboard
 
-Available on https://avalaunch-boulix3.azurewebsites.net/ (see [action](https://github.com/boulix3/avalaunch-dashboard/actions/workflows/main_avalaunch-boulix3.yml))
+## Demo available on https://avalaunch-boulix3.azurewebsites.net/ 
+Built and deployed using [action](https://github.com/boulix3/avalaunch-dashboard/actions/workflows/main_avalaunch-boulix3.yml)
 
-This is an experimental dashboard to present [Avalaunch](https://avalaunch.app/) sales data in an original way.
-
-Tech stack :
+### This is an experimental dashboard to present [Avalaunch](https://avalaunch.app/) sales data in an original way using a _.NET_ tech stack :
 
 - [Blazor wasm](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new-sdk-templates#blazorwasm) app with asp.net backend (`dotnet new blazorwasm --hosted --pwa`)
 - [Nethereum](https://github.com/Nethereum/Nethereum) : To query smart contracts
